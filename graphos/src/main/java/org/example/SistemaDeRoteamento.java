@@ -3,6 +3,7 @@ package org.example;
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -98,9 +99,13 @@ public class SistemaDeRoteamento {
             while (arestas.hasNext()) {
                 DefaultWeightedEdge aresta = arestas.next();
                 Vertice vizinho = grafo.getEdgeTarget(aresta);
-                System.out.print(vizinho.getNome() + " - " + vizinho.getBairro());
-                if (arestas.hasNext()) {
-                    System.out.print(", ");
+
+                // Verifique se o vértice vizinho não é igual ao vértice atual
+                if (!vizinho.equals(vertice)) {
+                    System.out.print(vizinho.getNome() + " - " + vizinho.getBairro());
+                    if (arestas.hasNext()) {
+                        System.out.print(", ");
+                    }
                 }
             }
 
@@ -109,25 +114,31 @@ public class SistemaDeRoteamento {
         System.out.println("------------*****-------------");
     }
 
-    public static void buscarCaminhoMaisCurto(Graph<Vertice,DefaultWeightedEdge>grafo,String nome, String nom2){
+    public static void buscarCaminhoMaisCurto(Graph<Vertice, DefaultWeightedEdge> grafo, String nome, String nom2) {
         DijkstraShortestPath<Vertice, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<>(grafo);
-        Vertice pessoa1 = null,pessoa2 = null;
-        Double resultado=0.0;
-        if(buscarPessoaPorNome(grafo,nome)!=null && buscarPessoaPorNome(grafo,nom2)!=null) {
+        Vertice pessoa1 = null, pessoa2 = null;
+        Double resultado = 0.0;
+        if (buscarPessoaPorNome(grafo, nome) != null && buscarPessoaPorNome(grafo, nom2) != null) {
             pessoa1 = buscarPessoaPorNome(grafo, nome);
             pessoa2 = buscarPessoaPorNome(grafo, nom2);
         }
-        if(pessoa1 !=null && pessoa2 !=null) {
-            resultado = dijkstra.getPathWeight(pessoa1, pessoa2);
-        }
-        if(resultado != 0){
-            System.out.println("Menor distância de "+pessoa1.getNome()+" para: "+pessoa2.getNome() + "é: " + resultado);
-        }else{
-            System.out.println("Caminho não encontrado");
+        if (pessoa1 != null && pessoa2 != null) {
+            GraphPath<Vertice, DefaultWeightedEdge> path = dijkstra.getPath(pessoa1, pessoa2);
+            if (path != null) {
+                resultado = path.getWeight();
+                System.out.println("Menor distância de " + pessoa1.getNome() + " para: " + pessoa2.getNome() + " é: " + resultado+"\n");
+
+                // Imprimir os vértices do caminho
+                System.out.println("Caminho percorrido:");
+                for (Vertice vertice : path.getVertexList()) {
+                    System.out.print(vertice.getNome() +" -> ");
+                }
+                System.out.print("\n");
+            } else {
+                System.out.println("Caminho não encontrado");
+            }
         }
     }
-
-
     public static void main(String[] args) {
         Graph<Vertice, DefaultWeightedEdge> grafo = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
         Scanner scanner = new Scanner(System.in);
@@ -135,15 +146,14 @@ public class SistemaDeRoteamento {
         while (true) {
             System.out.println("----------*****----------");
             System.out.println("Escolha uma opção:");
-            System.out.println("1. Adicionar Pessoa ao Grafo");
-            System.out.println("2. Remover Pessoa do Grafo");
+            System.out.println("1. Adicionar Cliente ao Grafo");
+            System.out.println("2. Remover Cliente do Grafo");
             System.out.println("3. Criar Aresta");
             System.out.println("4. Remover Aresta");
             System.out.println("5. Buscar Caminho Mais Curto");
             System.out.println("6. Imprimir Grafo");
             System.out.println("7. Sair");
             System.out.println("----------*****----------");
-            System.out.println("\n");
             int escolha = scanner.nextInt();
             scanner.nextLine();
 
