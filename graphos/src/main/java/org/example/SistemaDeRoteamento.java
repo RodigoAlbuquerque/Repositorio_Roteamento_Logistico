@@ -129,7 +129,68 @@ public class SistemaDeRoteamento {
 
 
     public static void main(String[] args) {
+        Graph<Vertice, DefaultWeightedEdge> grafo = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+        Scanner scanner = new Scanner(System.in);
 
+        while (true) {
+            System.out.println("----------*****----------");
+            System.out.println("Escolha uma opção:");
+            System.out.println("1. Adicionar Pessoa ao Grafo");
+            System.out.println("2. Remover Pessoa do Grafo");
+            System.out.println("3. Criar Aresta");
+            System.out.println("4. Remover Aresta");
+            System.out.println("5. Buscar Caminho Mais Curto");
+            System.out.println("6. Imprimir Grafo");
+            System.out.println("7. Sair");
+            System.out.println("----------*****----------");
+            System.out.println("\n");
+            int escolha = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (escolha) {
+                case 1:
+                    adicionarPessoaAoGrafo(grafo);
+                    break;
+                case 2:
+                    System.out.print("Digite o usuário do vertice a ser removido: ");
+                    String nomeRemover = scanner.nextLine();
+                    removerPessoaDoGrafo(grafo, nomeRemover);
+                    break;
+                case 3:
+                    System.out.print("Digite o usuário da primeira pessoa: ");
+                    String nome1 = scanner.nextLine();
+                    System.out.print("Digite o usuário da segunda pessoa: ");
+                    String nome2 = scanner.nextLine();
+                    System.out.print("Digite o peso da aresta: ");
+                    double peso = scanner.nextDouble();
+                    criarAresta(grafo, nome1, nome2, peso);
+                    break;
+                case 4:
+                    System.out.print("Digite o usuário da primeira pessoa: ");
+                    String nome1Remover = scanner.nextLine();
+                    System.out.print("Digite o usuário da segunda pessoa: ");
+                    String nome2Remover = scanner.nextLine();
+                    removerAresta(grafo, nome1Remover, nome2Remover);
+                    break;
+                case 5:
+                    System.out.print("Digite o usuário da primeira pessoa: ");
+                    String nomeOrigem = scanner.nextLine();
+                    System.out.print("Digite o usuário da segunda pessoa: ");
+                    String nomeDestino = scanner.nextLine();
+                    buscarCaminhoMaisCurto(grafo, nomeOrigem, nomeDestino);
+                    break;
+                case 6:
+                    imprimirGrafo(grafo);
+                    break;
+                case 7:
+                    System.out.println("ADEUS COWBOY, ATÉ A PRÓXIMA.");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Opção inválida. Por favor, escolha uma opção válida.");
+            }
+        }
     }
 }
 
